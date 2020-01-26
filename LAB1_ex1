@@ -1,0 +1,41 @@
+EPI_data=read.csv("C:/Users/Jean/Documents/2020 Spring/ITWS 6600/1_16_20/2010EPI_data.csv")
+attach(EPI_data)
+# fix(EPI_data)
+# View(EPI_data)
+summary(EPI)
+fivenum(EPI,na.rm=1)
+stem(EPI)
+hist(EPI)
+hist(EPI,seq(30,95,1),prob=1)
+lines(density(EPI,na.rm=1,bw=1))
+rug(EPI)
+
+plot(ecdf(EPI), do.points=0, verticals=1) 
+par(pty='s')
+qqnorm(EPI);qqline(EPI)
+
+x=seq(30,95,1)
+qqplot(qt(ppoints(250),df=5),x,xlab="Q-Q plot for t dsn")
+qqline(x)
+
+summary(DALY)
+fivenum(DALY,na.rm=1)
+stem(DALY)
+hist(DALY,seq(0,95,1),prob=1)
+lines(density(DALY,na.rm=1,bw=1))
+rug(DALY)
+plot(ecdf(DALY),do.points=0,verticals=1)
+qqnorm(DALY);qqline(DALY)
+
+
+summary(WATER_H)
+fivenum(WATER_H,na.rm=1)
+stem(WATER_H)
+hist(WATER_H,seq(0,100,1),prob=1)
+lines(density(WATER_H,na.rm=1,bw=1))
+rug(WATER_H)
+plot(ecdf(WATER_H),do.points=0,verticals=1)
+qqnorm(WATER_H);qqline(WATER_H)
+
+
+detach(EPI_data)
