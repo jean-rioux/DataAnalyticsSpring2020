@@ -1,0 +1,106 @@
+# LAB 1 exercise 2 using 2010 EPI data
+
+# read csv data. Need to skip first row
+EPI_data=read.csv("C:/Users/Jean/Documents/2020 Spring/ITWS 6600/1_16_20/2010EPI_data.csv",skip=1)
+View(EPI_data)
+# attached dataframe to make it easier to use
+attach(EPI_data)
+
+# makes list of EPI values that are not 
+# landlocked in Landlock column of dataframe
+epiland=EPI[!Landlock]
+epiland
+# makes list from epiland of non-n/a vals
+eland=epiland[!is.na(epiland)]
+eland
+
+summary(eland)
+stem(eland)
+hist(eland,seq(30,95,1),prob=1)
+lines(density(eland,na.rm=1,bw=1))
+rug(eland)
+
+plot(ecdf(eland), do.points=0, verticals=1)
+shapiro.test(eland)
+par(pty='s')
+qqnorm(eland);qqline(eland)
+
+#EPI list of areas with surface water
+surfwater=EPI[!No_surface_water]
+e.surfwater=surfwater[!is.na(surfwater)]
+e.surfwater
+
+summary(e.surfwater)
+stem(e.surfwater)
+hist(e.surfwater,seq(30,95,1),prob=1)
+lines(density(e.surfwater,na.rm=1,bw=1))
+rug(e.surfwater)
+
+plot(ecdf(e.surfwater), do.points=0, verticals=1)
+shapiro.test(e.surfwater)
+par(pty='s')
+qqnorm(e.surfwater);qqline(e.surfwater)
+
+#EPI list of desert areas
+edesert=EPI[Desert==1][!is.na(EPI[Desert==1])]
+edesert
+
+summary(edesert)
+stem(edesert)
+hist(edesert,seq(30,75,1),prob=1)
+lines(density(edesert,na.rm=1,bw=1))
+rug(edesert)
+
+plot(ecdf(edesert), do.points=0, verticals=1)
+shapiro.test(edesert)
+par(pty='s')
+qqnorm(edesert);qqline(e.surfwater)
+length(edesert)
+#high shapiro p-value because small sample size!!
+
+#EPI list of high pop density areas
+ehighpop=EPI[High_Population_Density==1][!is.na(EPI[High_Population_Density==1])]
+ehighpop
+
+summary(ehighpop)
+stem(ehighpop)
+hist(ehighpop,seq(30,95,1),prob=1)
+lines(density(ehighpop,na.rm=1,bw=1))
+rug(ehighpop)
+
+plot(ecdf(ehighpop), do.points=0, verticals=1)
+shapiro.test(ehighpop)
+par(pty='s')
+qqnorm(ehighpop);qqline(e.surfwater)
+length(ehighpop)
+#again p-value >.05, probably due to small sample size
+
+# get unique values from EPI_region and GEO_subregion
+epiregions=unique(EPI_regions)
+subregions=unique(GEO_subregion)
+
+#filter by epi_region
+
+# Request for index of epi_Region to filter by
+# epiregions; req.region=as.numeric(readline(prompt = "Select EPI_region index number: "))
+
+req.region=1
+epiregions[req.region]
+e.region=EPI[EPI_regions==epiregions[req.region]]
+e.region=e.region[!is.na(e.region)]
+e.region
+
+
+# filter by geo_subregion
+
+# request for index of GEO_subregion to filter by
+# subregions;req.subregion=as.numeric(readline(prompt = "Select GEO_subregion index number: "))
+
+req.subregion=10 #South asia is 10
+subregions[req.subregion]
+e.gsubregion=EPI[GEO_subregion==subregions[req.subregion]]
+e.gsubregion=e.gsubregion[!is.na(e.gsubregion)]
+e.gsubregion
+
+# Detach dataframe
+detach(EPI_data)
