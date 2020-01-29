@@ -1,4 +1,4 @@
-# LAB 1 exercise using 2010 EPI data
+# LAB 1 exercise 1 using 2010 EPI data
 # read csv data. Need to skip first row
 EPI_data=read.csv("C:/Users/Jean/Documents/2020 Spring/ITWS 6600/1_16_20/2010EPI_data.csv",skip=1)
 View(EPI_data)
