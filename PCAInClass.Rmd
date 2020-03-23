@@ -1,0 +1,65 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## USArrest data
+```{r}
+library(stats)
+data("USArrests")
+states=row.names(USArrests)
+# states
+names(USArrests)
+
+apply(USArrests, 2, var)
+
+pr.out=prcomp(USArrests,scale=T )
+names(pr.out)
+
+pr.out$center
+pr.out$scale
+
+pr.out$rotation
+
+dim(pr.out$x)
+
+```
+
+```{r}
+biplot(pr.out,scale = 0)
+summary(pr.out)
+pr.out$sdev
+pr.var=pr.out$sdev^2
+pve=pr.var/sum(pr.var)
+
+```
+
+## Iris dataset
+```{r}
+data("iris")
+head(iris)
+
+irisdata1=iris[,1:4]
+
+prin_comps=princomp(irisdata1,cor = T,score=T)
+summary(prin_comps)
+
+
+```
+
+```{r}
+plot(prin_comps)
+plot(prin_comps,type="l")
+biplot(prin_comps)
+```
+## Boston data
+```{r}
+data(Boston,package = "MASS")
+pca_out=prcomp(Boston,scale. = T)
+plot(pca_out)
+
+biplot(pca_out,scale = 0)
+
+boston_pc=pca_out$x
+
+```
