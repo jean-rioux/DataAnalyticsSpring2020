@@ -1,0 +1,180 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+
+set.seed(12345)
+par(mar=rep(.2,4))
+Matrix_data=matrix(rnorm(400),nrow = 40)
+image(1:10,1:40,t(Matrix_data)[,nrow(Matrix_data):1])
+```
+
+```{r}
+par(mar=rep(.2,4))
+heatmap(Matrix_data)
+```
+
+```{r}
+set.seed(678910)
+for (i in 1:40) {
+  coin_Flip=rbinom(1,size = 1,prob = .5)
+  if(coin_Flip){
+    Matrix_data[i,]=Matrix_data[i,]+rep(c(0,3),each=5)
+    }
+}
+
+
+par(mar=rep(.2,4))
+image(1:10,1:40,t(Matrix_data)[,nrow(Matrix_data):1])
+
+par(mar=rep(.2,4))
+heatmap(Matrix_data)
+```
+
+```{r}
+hh=hclust(dist(Matrix_data))
+ordered_matrix=Matrix_data[hh$order,]
+
+par(mfrow=c(1,3))
+image(t(ordered_matrix)[,nrow(ordered_matrix):1])
+
+plot(rowMeans(ordered_matrix),40:1,xlab="The Row Mean",ylab="Row",pch=19)
+
+plot(colMeans(ordered_matrix),xlab="Column",ylab="Column Mean",pch=19)
+```
+
+## Lab3_ctree1.R
+```{r}
+require(rpart)
+swiss_rpart=rpart(Fertility~Agriculture+Education+Catholic,
+                  data=swiss)
+plot(swiss_rpart)
+text(swiss_rpart)
+
+require(party)
+
+treeSwiss=ctree(Species ~ .,
+                data=iris)
+plot(treeSwiss)
+
+cforest(Species ~ .,
+        data=iris,
+        controls=cforest_control(mtry=2,mincriterion=0))
+
+treeFert=ctree(Fertility~Agriculture+Education+Catholic,
+               data=swiss)
+
+cforest(Fertility~Agriculture+Education+Catholic,
+        data = swiss,
+        controls=cforest_control(mtry=2, mincriterion=0))
+
+library(tree)
+tr=tree(Species ~ .,
+        data=iris)
+tr
+tr$frame
+plot(tr)
+text(tr)
+
+tr=rpart(Species ~ .,data=iris)
+library(rpart.plot)
+rpart.plot(tr)
+
+```
+
+##Lab3_ctree2.R
+```{r}
+# Conditional Inference Tree for Mileage
+fit2M=ctree(Mileage~Price+Country+Reliability+Type,
+            data=na.omit(cu.summary))
+summary(fit2M)
+# plot tree
+plot(fit2M, uniform=TRUE, main="CI Tree Tree for Mileage ")
+
+```
+
+##Lab3_ctree3.R
+```{r}
+fitK <- ctree(Kyphosis ~ Age + Number + Start, data=kyphosis)
+plot(fitK, main="Conditional Inference Tree for Kyphosisâ€")
+plot(fitK, main="Conditional Inference Tree for Kyphosis",type="simple")
+
+```
+
+
+```{r}
+data("titanic")
+library(titanic)
+library(rpart)
+library(rpart.plot)
+library(randomForest)
+library(dplyr)
+```
+
+```{r}
+df=data.frame(titanic_train)
+titanic.df=subset(df,select=-c(PassengerId,Name,Ticket,Cabin))
+titanic.df$Sex=as.factor(titanic.df$Sex)
+titanic.df$Embarked=as.factor(titanic.df$Embarked)
+set.seed(1234)
+index=sample(1:nrow(titanic.df),.8*nrow(titanic.df))
+train=titanic.df[index,]
+test=titanic.df[-index,]
+```
+
+```{r}
+rpart.model=rpart(Survived~.,data=train,method = "class")
+rpart.plot(rpart.model)
+
+rpart.pred=predict(rpart.model,test,type = "class")
+rpart.acc=mean(rpart.pred==test$Survived)
+rpart.acc
+```
+
+
+```{r}
+ctree.model=ctree(Survived~.,data=train)
+plot(ctree.model,main = "ctree")
+
+ctree.pred=predict(ctree.model,test)
+ctree.pred=ifelse(ctree.pred>mean(train$Survived),1,0)
+ctree.acc=mean(ctree.pred==test$Survived)
+ctree.acc
+```
+
+```{r}
+hclust.train=hclust(dist(train),method = "complete")
+plot(hclust.train)
+
+hclust.model=hclust(dist(titanic.df),method = "complete")
+plot(hclust.model)
+
+```
+
+```{r}
+library(randomForest)
+library(kableExtra)
+
+age.median=median(na.omit(train$Age))
+train$Age=ifelse(is.na(train$Age),mean(train$Age),train$Age)
+train=train%>%mutate(Age=ifelse(is.na(Age),age.median,Age))
+test=test%>%mutate(Age=ifelse(is.na(Age),age.median,Age))
+
+pred.df=data.frame()
+for (i in 1:7){
+tmp.model=randomForest(Survived~.,data=train,type=classification,ntree=500,mtry=i)
+tmp.pred=predict(tmp.model,test,type = "class")
+tmp.pred=ifelse(tmp.pred>mean(train$Survived),1,0)
+pred.df[i,1]=mean(tmp.pred==test$Survived)
+}
+kable(pred.df)
+
+mtry.star=which.max(pred.df$V1)
+
+forest.model=randomForest(Survived~.,data=train,type=classification,ntree=500,mtry=mtry.star)
+plot(forest.model)
+```
+
