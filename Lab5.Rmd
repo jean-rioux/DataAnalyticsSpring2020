@@ -1,0 +1,105 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+wine_data=read.table("http://archive.ics.uci.edu/ml/machinelearning-databases/wine/wine.data", sep = ",")
+
+wine_data=read.table("C:\\Users\\Jean\\Downloads\\wine.data", sep = ",")
+head(wine_data)
+```
+
+```{r}
+nrow(wine_data)
+dim(wine_data)
+
+colnames(wine_data)=c("Cvs","Alcohol","Malic_Acid", "Ash",
+                      "Alkalinity_of_Ash","Magnesium",
+                      "Total_Phenols", "Flavanoids",
+                     "NonFlavanoid_Phenols","Proanthocyanins",
+                     "Color_Intensity", "Hue",
+                     "OD280/OD315_of_Diluted_Wine","Proline")
+head(wine_data)
+
+heatmap(cor(wine_data),Rowv = NA,Colv=NA)
+
+cultivar_classes = factor(wine_data$Cvs)
+cultivar_classes
+```
+
+```{r}
+wine_data_PCA=prcomp(scale(wine_data[,-1]))
+summary(wine_data_PCA)
+
+
+```
+
+```{r}
+require(kknn)
+data(iris)
+m=dim(iris)[1]
+val=sample(1:m, size = round(m/3), replace = FALSE, prob = rep(1/m, m)) 
+iris.learn=iris[-val,]
+iris.valid=iris[val,]
+
+iris.kknn=train.kknn(Species~., iris.learn, distance = 1,
+                     kernel = c("triangular", "epanechnikov",
+                                "biweight", "triweight", "cos", "inv",
+                                "gaussian", "rank", "optimal") )
+summary(iris.kknn)
+table(predict(iris.kknn,iris.valid),iris.valid$Species)
+
+# head(iris.kknn$W)
+# head(iris.kknn$D)
+# head(iris.kknn$C)
+# head(iris.kknn$fitted.values)
+```
+
+```{r}
+require(randomForest)
+library(gam)
+data(kyphosis)
+fitKF=randomForest(Kyphosis ~ Age+Number+Start,
+                   data=kyphosis)
+print(fitKF)
+importance(fitKF)
+
+data("swiss")
+fitSwiss=randomForest(Fertility ~ Agriculture + Education + Catholic,
+                      data = swiss)
+print(fitSwiss)
+importance(fitSwiss)
+varImpPlot(fitSwiss)
+
+plot(fitSwiss)
+
+getTree(fitSwiss,1, labelVar=TRUE)
+
+help(randomForest)
+
+help(rfcv)
+
+data(imports85)
+imports85=na.omit(imports85)
+fitImp85=randomForest(price~make+horsepower+height,
+                      data=imports85)
+fitImp85
+plot(fitImp85)
+importance(fitImp85)
+varImpPlot(fitImp85)
+```
+
+```{r}
+require(rpart)
+data("swiss")
+swiss_rpart=rpart(Fertility ~ Agriculture + Education + Catholic,
+                  data = swiss)
+plot(swiss_rpart)
+text(swiss_rpart)
+```
+
+```{r}
+
+```
+
