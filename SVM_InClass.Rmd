@@ -1,0 +1,64 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+rm(list = ls())
+data("iris")
+library(ggplot2)
+library(e1071)
+
+```
+
+```{r}
+qplot(Petal.Length,Petal.Width,data = iris,color=Species)
+svm_model1=svm(Species~.,data = iris)
+summary(svm_model1)
+```
+```{r}
+plot(svm_model1,data=iris,
+     Petal.Width~Petal.Length,
+     slice=list(Sepal.Width=3,Sepal.Length=4))
+```
+
+
+```{r}
+pred1=predict(svm_model1,iris)
+table1=table(Predicted=pred1,Actual=iris$Species)
+table1
+model1_acc=sum(diag(table1))/sum(table1)
+model1_mis=1-model1_acc
+```
+
+```{r}
+svm_mod2=svm(Species~.,data = iris,kernel="linear")
+summary(svm_mod2)
+plot(svm_mod2,data=iris,
+     Petal.Width~Petal.Length,
+     slice=list(Sepal.Width=3,Sepal.Length=4))
+```
+```{r}
+pred2=predict(svm_mod2,iris)
+tab2=table(Predicted=pred2,Actual=iris$Species)
+model2_acc=sum(diag(tab2))/sum(tab2)
+model2_mis=1-model2_acc
+```
+
+```{r}
+svm_mod3=svm(Species~.,data = iris,kernel="polynomial")
+summary(svm_mod3)
+plot(svm_mod3,data=iris,
+     Petal.Width~Petal.Length,
+     slice=list(Sepal.Width=3,Sepal.Length=4))
+```
+
+```{r}
+pred3=predict(svm_mod3,iris)
+tab3=table(Predicted=pred3,Actual=iris$Species)
+tab3
+model3_acc=sum(diag(tab3))/sum(tab3)
+model3_mis=1-model3_acc
+model3_acc
+```
+
