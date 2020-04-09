@@ -4,6 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
+rm(list = ls())
 library(e1071)
 set.seed(1)
 
@@ -248,7 +249,7 @@ X = m1[,1:2]
 
 df = data.frame( X , Y ) 
 
-par(mfcol=c(4,2)) 
+# par(mfcol=c(4,2)) 
 for( cost in c( 1e-3 ,1e-2 ,1e-1, 1e0,  1e+1, 1e+2 ,1e+3)) { 
 #cost <- 1 
 model.svm <- svm( Y ~ . , data = df ,  type = "C-classification" , kernel = 
@@ -313,12 +314,12 @@ predict(irismodel, iris[,-5], type="probabilities")
 ## lab1_svm8
 ```{r}
 ## Demo of the plot function
-x <- rbind(matrix(rnorm(120),2),matrix(rnorm(120,mean=3),2))
+x <- rbind(matrix(rnorm(120),,2),matrix(rnorm(120,mean=3),,2))
 y <- matrix(c(rep(1,60),rep(-1,60)))
 df=data.frame(x=x,y=y)
 
 svp <- ksvm(x,y,type="C-svc")
-plot(svp,data=df)
+plot(svp,data=x)
 
 
 ### Use kernelMatrix
@@ -333,7 +334,7 @@ svp2
 ## lab1_svm9
 ```{r}
 # test data
-xtest <- rbind(matrix(rnorm(20),2),matrix(rnorm(20,mean=3),2))
+xtest <- rbind(matrix(rnorm(20),,2),matrix(rnorm(20,mean=3),,2))
 # test kernel matrix i.e. inner/kernel product of test data with
 # Support Vectors
 
