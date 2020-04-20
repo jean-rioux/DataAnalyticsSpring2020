@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+rm(list =ls())
+data(economics, package="ggplot2")
+
+economics$index=1:nrow(economics)
+economics=economics[1:80,]
+
+loessMod10=loess(uempmed~index,data = economics,span = .1)
+loessMod25=loess(uempmed~index,data = economics,span = .25)
+loessMod50=loess(uempmed~index,data = economics,span = .5)
+
+```
+
+```{r}
+smoothed10=predict(loessMod10)
+smoothed25=predict(loessMod25)
+smoothed50=predict(loessMod50)
+
+```
+
+```{r}
+plot(economics$uempmed,x=economics$date,type = "l",main = "Loess Smoothing and Prediction",xlab = "Date",ylab = "Unemployment (Median)")
+
+lines(smoothed10,x=economics$date,col="red")
+lines(smoothed25,x=economics$date,col="green")
+lines(smoothed50,x=economics$date,col="blue")
+
+```
+
+```{r}
+data("cars")
+str(cars)
+```
+
+```{r}
+plot(speed~dist,data = cars)
+
+lines(lowess(cars$speed~cars$dist,f=.01),col=1)
+lines(lowess(cars$speed~cars$dist,f=.1),col=2)
+lines(lowess(cars$speed~cars$dist,f=2/3),col=3)
+lines(lowess(cars$speed~cars$dist,f=.75),col=4)
+lines(lowess(cars$speed~cars$dist,f=.8),col=5)
+lines(lowess(cars$speed~cars$dist,f=.9),col=6)
+
+legend(105,15,legend = c(".01",".1",".67",".75",".8",".9"),col = c(1:6),lty=1, cex=0.5)
+
+```
+
+```{r}
+library(MASS)
+names(iris)
+dim(iris)
+head(iris)
+```
+
+```{r}
+set.seed(555)
+train=sample(1:nrow(iris),nrow(iris)/2)
+iris_train=iris[train,]
+iris_test=iris[-train,]
+
+fit1=lda(Species~.,data = iris_train)
+predict1=predict(fit1,iris_train)
+predict1_class=predict1$class
+table1=table(predict1_class,iris_train$Species)
+table1
+sum(diag(table1)/sum(table1))
+
+predict2=predict(fit1,iris_test)
+predict2_class=predict2$class
+table2=table(predict2_class,iris_test$Species)
+table2
+sum(diag(table2)/sum(table2))
+
+```
+
